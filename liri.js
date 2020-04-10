@@ -7,6 +7,7 @@
 //   }
 // );
 require("dotenv").config();
+// variables
 var Spotify = require("node-spotify-api");
 var moment = require("moment");
 var keys = require("./keys.js");
@@ -24,8 +25,9 @@ const bandsinTown = require("axios").create({
   timeout: 5000,
 });
 
+// statement that will run if 'do-what-it-says' is printed in argument 2 in terminal. This statement will read the random.txt file
+// and perform one of the switch cases based on what is in the txt file.
 if(doThis === "do-what-it-says") {
-// Read the file and print its contents.
 var random = require("fs"),
   filename = "random.txt";
   try{
@@ -41,14 +43,19 @@ var random = require("fs"),
   }
 };
 
+// switch case
 switch (doThis) {
+  // case that will run the spotify API
   case "spotify-this-song":
     var songQuery = "";
+    // if no song is listed in argument 3 then the query will run for 'The Sign' and return the song info in the console.
     if (typeof searchThis === "string") {
       songQuery = searchThis;
     } else {
       songQuery = "The Sign";
     }
+    // if a song is listed in arguement 3 then the query will run to get info based on that song.
+    // once the query is completed the song info will be printed to the console.
     spotify.search(
       { type: "track", query: songQuery, limit: outputLimit },
       function (err, data) {
@@ -81,6 +88,7 @@ switch (doThis) {
       }
     );
     break;
+    // if no movie is listed in argument 3 then the query will run for 'Mr. Nobody' and return the movie info in the console.
   case "movie-this":
     var movieQuery = "";
     var extraconsole = false
@@ -90,6 +98,8 @@ switch (doThis) {
       movieQuery = "Mr. Nobody";
       extraconsole = true
     }
+    // if a movie is listed in arguement 3 then the query will run to get info based on that movie.
+    // once the query is completed the movie info will be printed to the console.
     OMDB.get("?apikey=trilogy&t=" + movieQuery)
       .then(function (response) {
         const omdbData = response["data"];
@@ -101,8 +111,6 @@ switch (doThis) {
         var language = omdbData["Language"];
         var plot = omdbData["Plot"];
         var actors = omdbData["Actors"];
-        // handle success
-        // console.log(response.data);
         console.log(
           "title: ",
           title,
@@ -130,14 +138,12 @@ switch (doThis) {
         console.log("\n-------------\n");
       })
       .catch(function (error) {
-        // handle error
         console.log(error);
       });
-    //   .finally(function () {
-    //     // always executed
-    //   });
     break;
   case "concert-this":
+    // if a band is listed in arguement 3 then the query will run to get info based on that band and the upcoming concert.
+    // once the query is completed the bands concert info will be printed to the console.
     bandsinTown
       .get(
         "artists/" + searchThis + "/events?app_id=codingbootcamp&date=upcoming"
@@ -165,11 +171,7 @@ switch (doThis) {
         }
       })
       .catch(function (error) {
-        // handle error
         console.log(error);
       });
-    //   .finally(function () {
-    //     // always executed
-    //   });
     break;
 }
