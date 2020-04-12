@@ -1,11 +1,3 @@
-// logFile.appendFile(
-//   "log.txt",
-//   JSON.stringify(response.data),
-//   function (err) {
-//     if (err) throw err;
-//     console.log("Saved!");
-//   }
-// );
 require("dotenv").config();
 // variables
 var Spotify = require("node-spotify-api");
@@ -16,6 +8,7 @@ var doThis = process.argv[2];
 var searchThis = process.argv[3];
 var outputLimit = 5;
 var logFile = require("fs");
+var logFileName = "log.txt"
 const OMDB = require("axios").create({
   baseURL: "https://www.omdbapi.com/",
   timeout: 5000,
@@ -24,6 +17,17 @@ const bandsinTown = require("axios").create({
   baseURL: "https://rest.bandsintown.com/",
   timeout: 5000,
 });
+
+function logging(fileOutput) {
+  logFile.appendFileSync(
+    logFileName,
+    fileOutput,
+    function (err) {
+    if (err) throw err;
+    // console.log("Saved!");
+  }
+  );
+};
 
 // statement that will run if 'do-what-it-says' is printed in argument 2 in terminal. This statement will read the random.txt file
 // and perform one of the switch cases based on what is in the txt file.
@@ -73,17 +77,13 @@ switch (doThis) {
             artist.push(artistarray[j]["name"]);
           }
           artist = artist.join(", ");
-          console.log(
-            "artist: ",
-            artist,
-            "\nalbum: ",
-            album,
-            "\npreviewURL: ",
-            previewURL,
-            "\nsong: ",
-            song
-          );
-          console.log("\n-------------\n");
+          var output = "artist: " + artist +
+          "\nalbum: " + album +
+          "\npreviewURL: " + previewURL +
+          "\nsong: " + song +
+          "\n\n-------------\n"
+          console.log(output);
+          logging(output + "\n");
         }
       }
     );
@@ -111,31 +111,22 @@ switch (doThis) {
         var language = omdbData["Language"];
         var plot = omdbData["Plot"];
         var actors = omdbData["Actors"];
-        console.log(
-          "title: ",
-          title,
-          "\nyear: ",
-          year,
-          "\nIMDB rating: ",
-          imdbRating,
-          "\nrotten tomatoes rating: ",
-          rottenTomatoes,
-          "\ncountry: ",
-          country,
-          "\nlanguage: ",
-          language,
-          "\nplot: ",
-          plot,
-          "\nactors: ",
-          actors
-        );
-        if(extraconsole === true) {
-            console.log(
-                "\nIf you haven't watched Mr. Nobody, then you should: <http://www.imdb.com/title/tt0485947/>"
-              );
-              console.log("It's on Netflix!");
-        }
-        console.log("\n-------------\n");
+        var output = "title: " + title +
+          "\nyear: " + year +
+          "\nIMDB rating: " + imdbRating +
+          "\nrotten tomatoes rating: " + rottenTomatoes +
+          "\ncountry: " + country +
+          "\nlanguage: " + language +
+          "\nplot: " + plot +
+          "\nactors: " + actors;
+          if(extraconsole === true) {
+              output +=
+                  "\n\nIf you haven't watched Mr. Nobody, then you should: <http://www.imdb.com/title/tt0485947/>"
+              output += "\nIt's on Netflix!";
+          }
+          output += "\n\n-------------\n"
+        console.log(output);
+        logging(output + "\n");
       })
       .catch(function (error) {
         console.log(error);
@@ -157,21 +148,27 @@ switch (doThis) {
           concertData[i]["venue"]["city"] + ", " + concertData[i]["venue"]["country"];
         var date = moment(concertData[i]["datetime"]).format("MM/DD/YYYY");
         // console.log(response.data);
-        console.log(
-          "band: ",
-          band,
-          "\nvenue: ",
-          venue,
-          "\nlocation: ",
-          location,
-          "\ndate: ",
-          date
-        );
-        console.log("\n-------------\n");
+        var output = "band: " + band +
+        "\nvenue: " + venue +
+        "\nlocation: " + location +
+        "\ndate: " + date +
+        "\n\n-------------\n"
+        console.log(output);
+        logging(output + "\n");
         }
       })
       .catch(function (error) {
         console.log(error);
       });
     break;
+    default:
+      console.log("Usage: node liri.js {instruction} {'query'}");
+      console.log("Possible instructions: ");
+      console.log("     spotify-this-song - search spotify API for song title");
+      console.log("     movie-this - search OMDB API for movie title");
+      console.log("     concert-this - search Bands in Town API for concert information for a band/artist");
+      console.log("     do-what-it-says - reads random.txt and follows instructions. No query input accepted");
+      console.log("Query: - song title, movie title, or band/artist in quotations");
+      console.log("ex: node liri.js spotify-this-song 'Hey Jude'");
+      break;
 }
