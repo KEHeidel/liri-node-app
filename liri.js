@@ -6,18 +6,22 @@ var keys = require("./keys.js");
 var spotify = new Spotify(keys.spotify);
 var doThis = process.argv[2];
 var searchThis = process.argv[3];
+// limits the number of returns for spotify and band in town api
 var outputLimit = 5;
 var logFile = require("fs");
 var logFileName = "log.txt"
+// omdb api
 const OMDB = require("axios").create({
   baseURL: "https://www.omdbapi.com/",
   timeout: 5000,
 });
+// bands in town api
 const bandsinTown = require("axios").create({
   baseURL: "https://rest.bandsintown.com/",
   timeout: 5000,
 });
 
+// function for logging terminal output to tog.txt file
 function logging(fileOutput) {
   logFile.appendFileSync(
     logFileName,
@@ -52,14 +56,16 @@ switch (doThis) {
   // case that will run the spotify API
   case "spotify-this-song":
     var songQuery = "";
-    // if no song is listed in argument 3 then the query will run for 'The Sign' and return the song info in the console.
+    // if no song is listed in argument 3 then the query will run for 'The Sign' and return the song info in the console
+    // and the log.txt file
     if (typeof searchThis === "string") {
       songQuery = searchThis;
     } else {
       songQuery = "The Sign";
     }
     // if a song is listed in arguement 3 then the query will run to get info based on that song.
-    // once the query is completed the song info will be printed to the console.
+    // once the query is completed the song info will be printed to the console and the results will 
+    // also be printed to the log.txt file
     spotify.search(
       { type: "track", query: songQuery, limit: outputLimit },
       function (err, data) {
@@ -77,6 +83,7 @@ switch (doThis) {
             artist.push(artistarray[j]["name"]);
           }
           artist = artist.join(", ");
+          // console and log output formatting
           var output = "artist: " + artist +
           "\nalbum: " + album +
           "\npreviewURL: " + previewURL +
@@ -88,10 +95,11 @@ switch (doThis) {
       }
     );
     break;
-    // if no movie is listed in argument 3 then the query will run for 'Mr. Nobody' and return the movie info in the console.
-  case "movie-this":
-    var movieQuery = "";
-    var extraconsole = false
+    case "movie-this":
+      var movieQuery = "";
+      var extraconsole = false
+      // if no movie is listed in argument 3 then the query will run for 'Mr. Nobody' and return the movie info in the console
+      // and the log.txt file
     if (typeof searchThis === "string") {
       movieQuery = searchThis;
     } else {
@@ -99,7 +107,7 @@ switch (doThis) {
       extraconsole = true
     }
     // if a movie is listed in arguement 3 then the query will run to get info based on that movie.
-    // once the query is completed the movie info will be printed to the console.
+    // once the query is completed the movie info will be printed to the console and the log.txt file
     OMDB.get("?apikey=trilogy&t=" + movieQuery)
       .then(function (response) {
         const omdbData = response["data"];
@@ -111,6 +119,7 @@ switch (doThis) {
         var language = omdbData["Language"];
         var plot = omdbData["Plot"];
         var actors = omdbData["Actors"];
+        // console and log output formatting
         var output = "title: " + title +
           "\nyear: " + year +
           "\nIMDB rating: " + imdbRating +
@@ -134,7 +143,7 @@ switch (doThis) {
     break;
   case "concert-this":
     // if a band is listed in arguement 3 then the query will run to get info based on that band and the upcoming concert.
-    // once the query is completed the bands concert info will be printed to the console.
+    // once the query is completed the bands concert info will be printed to the console and the log.txt file
     bandsinTown
       .get(
         "artists/" + searchThis + "/events?app_id=codingbootcamp&date=upcoming"
@@ -147,7 +156,7 @@ switch (doThis) {
         var location =
           concertData[i]["venue"]["city"] + ", " + concertData[i]["venue"]["country"];
         var date = moment(concertData[i]["datetime"]).format("MM/DD/YYYY");
-        // console.log(response.data);
+        // console and log output formatting
         var output = "band: " + band +
         "\nvenue: " + venue +
         "\nlocation: " + location +
@@ -161,6 +170,8 @@ switch (doThis) {
         console.log(error);
       });
     break;
+    // if nothing is entered into the terminal the default case will run listing out the instructions
+    // for use in the console.
     default:
       console.log("Usage: node liri.js {instruction} {'query'}");
       console.log("Possible instructions: ");

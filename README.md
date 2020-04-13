@@ -5,11 +5,24 @@ The app performs API calls to Spotify, OMDB, and Bands in Town, to print off inf
 
 ---
 
-move technologies used up here
+## Technologies Used
+
+- [Spotify API](https://www.npmjs.com/package/node-spotify-api) _returns songs from spotify_ 
+- [OMDB API](https://www.omdbapi.com) _returns movies from OMDB_
+- [Bands in Town API](https://www.artists.bandsintown.com/bandsintown-api) _returns concert information for a band/artist from Bands in Town_
+- [Axios](https://www.npmjs.com/package/axios) _
+- [fs](https://nodejs.org/api/fs.html)
+- [Moment](https://www.npmjs.com/package/moment) _used to format time and dates_
+- [Dotenv](https://www.npmjs.com/package/dotenv)
+- [Node.js](https://nodejs.org/en/docs/)
+
+---
 
 ## Prerequists
 
-list module and associated install commands
+- [Spotify module](https://www.npmjs.com/package/node-spotify-api) _npm install --save node-spotify-api_
+- [Axios module](https://www.npmjs.com/package/axios) _$ npm install axios_
+
 
 ---
 
@@ -46,18 +59,6 @@ list module and associated install commands
 ![Random.movieresults](images/random.movie.results.png)
 
 
----
-
-## Technologies Used
-
-- [Spotify API](https://www.npmjs.com/package/node-spotify-api) _returns songs from spotify_ 
-- [OMDB API](https://www.omdbapi.com) _returns movies from OMDB_
-- [Bands in Town API](https://www.artists.bandsintown.com/bandsintown-api) _returns concert information for a band/artist from Bands in Town_
-- [Axios](https://www.npmjs.com/package/axios)
-- fs
-- moment
-- dotenv
-- node.js
 
 
 ---
